@@ -2,9 +2,7 @@
 
 # Doc
 
-Este es un juego de red implementado como una aplicación cliente/servidor en lenguaje C. El juego se llama "Juego del Caballero", y el objetivo es llevar un Datagrama IP desde un punto a otro en un tablero esquivando obstáculos. Tanto el cliente como el servidor funcionan como programas de terminal y se comunican mediante sockets. Aquí proporcionaremos una descripción detallada de cómo funciona el juego y cómo se implementa.
-
-
+Este es un juego de red implementado como una aplicación cliente/servidor en lenguaje C. El juego se llama "Juego del Caballero", y el objetivo es llevar un Datagrama IP desde un punto a otro en un tablero esquivando obstáculos. Tanto el cliente como el servidor funcionan como programas de terminal y se comunican mediante sockets. Aquí proporcionaremos una descripción detallada de cómo funciona el juego y cómo se implementa utilizando el protocolo <b>UDP </b> no orientado a la conexión. 
 
 ## Cliente
 ### Funcionamiento
@@ -51,7 +49,7 @@ El servidor comienza con un tablero inicial que se representa como una matriz de
 
 ## Ejecución del Programa
 
-Para compilar cualquiera de los dos ficheros ".c" utilizamos el compilador gcc de la siguiente panera:
+Para compilar cualquiera de los dos ficheros ".c" utilizamos el compilador gcc de la siguiente manera:
 ```shell
 gcc servidor.c -o "ejecutable"
 ```
