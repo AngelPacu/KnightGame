@@ -19,7 +19,7 @@
 
 #define MIDA_BUFFER 1024
 
-struct DataClient 
+struct DataClient
 {
     uint32_t id;
     char command;
@@ -41,6 +41,7 @@ uint32_t generarIdAleatoria() {
     return randomNum;
 }
 
+
 int main(int argc, char *argv[]) {
     char response;
     struct sockaddr_in server_addr;
@@ -48,48 +49,54 @@ int main(int argc, char *argv[]) {
 
     package.id = generarIdAleatoria();
     printf("Hola soy el cliente %u\n", package.id);
-
     // Crear socket del cliente
-    int client_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (client_socket == -1) {
-        perror("Error al crear el socket del cliente");
-        exit(2);
-    }
+    int client_socket;
 
-    // Definir la dirección del servidor
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(atoi(argv[2]));
-    inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
-
-    // Conectar al servidor
-    if (connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
-        perror("Error al conectar al servidor");
-        exit(3);
-    }
-
-        // Implementa la lógica del juego y la comunicación con el servidor aquí
-        // Envía comandos al servidor y recibe respuestas
-
+    while(1){
         // Leer el comando del usuario (U, D, L, R)
         printf("Ingrese un comando (U, D, L, R): ");
         scanf(" %c", &package.command);
 
+        client_socket = socket(AF_INET, SOCK_STREAM, 0);
+        if (client_socket == -1) {
+            perror("Error al crear el socket del cliente");
+            exit(2);
+        }
+
+        // Definir la dirección del servidor
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_port = htons(atoi(argv[2]));
+        inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
+
+        // Conectar al servidor
+        if (connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
+            perror("Error al conectar al servidor");
+            exit(3);
+        }
+
+        // Implementa la lógica del juego y la comunicación con el servidor aquí
+        // Envía comandos al servidor y recibe respuestas
+
+
+
         // Enviar el comando al servidor
+        printf("Enviando comando...\n");
         send(client_socket, &package, sizeof(struct DataClient), 0);
 
         // Recibir la respuesta del servidor
+        printf("Esperando respuesta...\n");
         recv(client_socket, &response, sizeof(char), 0);
 
         // Procesar la respuesta
         switch (response) {
-            case ' ': // Casilla libre
+            case 'L': // Casilla libre
                 printf("Casilla libre. Continúa.\n");
                 break;
             case 'T': // Casilla con trampa
                 printf("¡Has caído en una trampa! Pierdes una vida.\n");
                 break;
             case 'P': // Casilla de pared
-                printf("No puedes pasar. Elige otro camino.\n");
+                printf("¡Ouch! Te has estampado contra una pared.\n");
                 break;
             case 'V': // Casilla que incrementa una vida
                 printf("¡Has encontrado una vida extra!\n");
@@ -98,10 +105,16 @@ int main(int argc, char *argv[]) {
                 printf("DATAGRAMA ENTREGADO!! Has ganado el juego.\n");
                 close(client_socket); // Cerrar el socket
                 exit(0);
+            case 'D':
+                printf("Estas muerto\n");
+                close(client_socket); // Cerrar el socket
+                exit(0);
         }
 
 
         // Cierra el socket del cliente
         close(client_socket);
-        return 0;
     }
+
+    return 0;
+}
